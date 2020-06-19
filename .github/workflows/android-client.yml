@@ -25,8 +25,9 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: pull docker image and package apk
       run: |
+        echo $(pwd)
         sudo docker pull cangol/android-gradle
-        sudo chmod +x src/boat-house-android-proj/gradlew 
+        sudo chmod +x $(pwd)/src/boat-house-android-proj/gradlew 
         sodu docker run --tty --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
 
     - name: Upload a Build Artifact
