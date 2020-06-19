@@ -1,66 +1,38 @@
-name: Build and Deploy dev client 
-on: push
+name: test and build/package anroid apk
 
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
+    # Runs a single command using the runners shell
+    - name: test cmd
+      run: echo Hello, world!
 
-      - name: list env
-        run: env
+    # Runs a set of commands using the runners shell
+    - name: pull docker image and package apk
+      run: |
+        sudo docker pull cangol/android-gradle
+        sudo chmod +x src/boat-house-android-proj/gradlew 
+        sodu docker run --tty --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
 
-      - name: docker build client
-        run: docker build -f client/web/Dockerfile -t docker.pkg.github.com/${GITHUB_REPOSITORY}/client:action-${GITHUB_REF##*/}-ci-${GITHUB_RUN_NUMBER} -t docker.pkg.github.com/${GITHUB_REPOSITORY}/client:action-ci client/web
-
-      - name: docker images 
-        run: docker images
-
-      - name: docker login
-        run : docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY%/*} -p ${{ secrets.packages_token }}
-
-      - name: docker push client tag branch number
-        run : docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/client:action-${GITHUB_REF##*/}-ci-${GITHUB_RUN_NUMBER}
-      
-      - name: docker push client tag latest
-        run: docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/client:action-ci
-
-  deploy-dev:
-     needs: build
-     runs-on: ubuntu-latest
-     steps:
-       - uses: actions/checkout@v2
- 
-       - name: list env
-         run: env && ls
- 
-       - name: replace project name
-         run: sed -i "s|docker.pkg.github.com\/idcf-boat-house\/boat-house|docker.pkg.github.com\/${GITHUB_REPOSITORY%/*}\/boat-house|g" kompose/test/client-*.yaml
- 
-       - name: replace docker images tags
-         run: sed -i "s|:latest$|:action-ci|g" kompose/test/client-*.yaml
- 
-       - name: grep images url
-         run: grep -i "image:" kompose/test/client-*.yaml
-         #run: ls kompose/test/client-*.yaml
- 
-       - uses: Azure/k8s-set-context@v1
-         with:
-           kubeconfig: ${{ secrets.KUBE_CONFIG }}
- 
-       - uses: Azure/k8s-create-secret@v1
-         with:
-           namespace: boathouse-test
-           container-registry-url: docker.pkg.github.com
-           container-registry-username: ${GITHUB_REPOSITORY%/*}
-           container-registry-password: ${{ secrets.packages_token }}
-           secret-name: regcred
- 
-       - uses: Azure/k8s-deploy@v1
-         with:
-           namespace: 'boathouse-test-github'
-           manifests: |
-              kompose/test/client-deployment.yaml
-              kompose/test/client-svc.yaml
-           kubectl-version: 'latest'
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: boat-house-debug-apk.zip
+        # A file, directory or wildcard pattern that describes what to upload
+        path: $(pwd)/src/boat-house-android-proj/app/build/outputs/apk

@@ -75,11 +75,15 @@
 - docker image 地址： https://hub.docker.com/r/cangol/android-gradle
 - dockerfile及github仓库： https://github.com/Cangol/android-gradle-docker
 - 运行以下命令  
-   >注意，执行前请将 `/opt/workspace` 替换成Android项目所在的目录，即clone下来之后存放的目录，如：`/home/localadmin/lxm-work/boathouse/boat-house/src/boat-house-android-proj`.
+   >注意，下面的参数 `$(pwd):/opt/workspace`  表示 将当前Android项目目录映射至 docker容器内的 `/opt/workspace`目录中
+
+    `cd [android 项目所在目录 boat-house/src/boat-house-android-proj]`
 
     `docker pull cangol/android-gradle`
+
     `docker run --tty --interactive --volume=$(pwd):/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"`
-- 执行完成后，在`src/boat-house-android-proj/app/build/outputs/apk/debug`目录中可找到apk文件。
+
+- 执行完成后，在容器外部的 `src/boat-house-android-proj/app/build/outputs/apk/debug` 目录中可找到apk文件。
 
    
 
