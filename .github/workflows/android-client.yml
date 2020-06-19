@@ -20,7 +20,9 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: test cmd
-      run: echo Hello, world!
+      run: |
+           echo Hello, world!
+           echo $(pwd)
 
     # Runs a set of commands using the runners shell
     - name: pull docker image and package apk
@@ -28,7 +30,7 @@ jobs:
         echo $(pwd)
         sudo docker pull cangol/android-gradle
         sudo chmod +x $(pwd)/src/boat-house-android-proj/gradlew 
-        sudo docker run --tty --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
+        sodu docker run --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
