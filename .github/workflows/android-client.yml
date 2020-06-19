@@ -28,7 +28,7 @@ jobs:
         echo $(pwd)
         sudo docker pull cangol/android-gradle
         sudo chmod +x $(pwd)/src/boat-house-android-proj/gradlew 
-        sodu docker run --tty --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
+        sudo docker run --tty --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
