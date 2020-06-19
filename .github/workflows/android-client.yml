@@ -36,6 +36,6 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         # Artifact name
-        name: boat-house-debug-apk.zip
+        name: boat-house-debug-apk
         # A file, directory or wildcard pattern that describes what to upload
         path: src/boat-house-android-proj/app/build/outputs/apk

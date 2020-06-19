@@ -91,7 +91,19 @@
 
 ## DevOps
 
-自动化集成和发布Pipeline暂无。
+自动化集成和发布Pipeline。
+
+### 使用 jenkins 自动打包
+
+TODO
+
+### 使用 Github Action 自动打包
+ 
+详细见：[.github/workflows/android-client.yml](/.github/workflows/android-client.yml)
+
+使用docker 容器打包，并上传至 Github Action Build中（[build 历史](https://github.com/idcf-boat-house/boat-house-mobile-android/actions/runs/140756859) ）。
+
+
 
 ## 测试
 
