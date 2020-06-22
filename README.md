@@ -91,17 +91,23 @@
 
 ## DevOps
 
-自动化集成和发布Pipeline。
+自动化集成和发布 Pipeline 。
 
-### 使用 jenkins 自动打包
+#### 使用 jenkins 自动打包
 
-TODO
+- 文档，jenkins流水线配置请参考团队上手文档
+- Demo流水线地址：[点击这里](http://jenkins.devopshub.cn/blue/organizations/jenkins/boat-house-mobile-android/activity)
 
-### 使用 Github Action 自动打包
- 
-详细见：[.github/workflows/android-client.yml](/.github/workflows/android-client.yml)
+- 脚本详细见：[devops/jenkins/Jenkinsfile](/devops/jenkins/Jenkinsfile)
 
-使用docker 容器打包，并上传至 Github Action Build中（[build 历史](https://github.com/idcf-boat-house/boat-house-mobile-android/actions/runs/140756859) ）。
+- 实现方式：使用上面提到的docker image `cangol/android-gradle` 进行编译和打包，并上传至jenkins流水线的制品中（[查看这个build 历史](http://jenkins.devopshub.cn/blue/organizations/jenkins/boat-house-mobile-android/detail/master/6/pipeline) ）。
+
+#### 使用 Github Action 自动打包
+
+- 文档，Github Action 创建请参考文档：[Github 官方文档](https://help.github.com/cn/actions/configuring-and-managing-workflows/configuring-a-workflow)
+- Demo 流水线地址：[点击这里](https://github.com/idcf-boat-house/boat-house-mobile-android/actions?query=workflow%3A%22test+and+build%2Fpackage+anroid+apk%22)
+- 脚本详细见：[.github/workflows/android-client.yml](/.github/workflows/android-client.yml)
+- 实现方式： 使用 上面提到的docker image `cangol/android-gradle` 进行编译和打包，并上传至 Github Action Build中（[查看这个build 历史](https://github.com/idcf-boat-house/boat-house-mobile-android/actions/runs/140756859) ）。
 
 
 
@@ -112,14 +118,38 @@ TODO
 ## 常见问题
 
 - gradle代理问题
-
 当设置 Andorid Studio 好代理后，gradle还是报连接问题时,请检查 gradle.properties文件中关于代理的配置（Win系统此文件通常在目录: `C:\Users\[当前用户名]\.gradle`中），正确的相关配置如下：
+    ```
+    systemProp.https.proxyPort=25376
+    systemProp.http.proxyHost=127.0.0.1
+    systemProp.http.socks=25376
+    systemProp.https.socks=127.0.0.1
+    systemProp.https.proxyHost=127.0.0.1
+    systemProp.http.proxyPort=25376
+    ```
 
-```
-systemProp.https.proxyPort=25376
-systemProp.http.proxyHost=127.0.0.1
-systemProp.http.socks=25376
-systemProp.https.socks=127.0.0.1
-systemProp.https.proxyHost=127.0.0.1
-systemProp.http.proxyPort=25376
-```
+- not found gradlew 
+在本地或调试流水线时，如果命令行报类似错误，则需对`gradlew` 命令文件进行授权：`chmod +x src/boat-house-android-proj/gradlew `
+
+- jenkins流水线执行时，清理原仓库内容时报权限错误
+
+    ```
+    hudson.plugins.git.GitException: Command "git clean -fdx" returned status code 1:
+
+    xxxxx
+
+    stdout: 
+
+    stderr: warning: failed to remove src/boat-house-android-proj/.gradle/buildOutputCleanup/outputFiles.bin: Permission denied
+
+    warning: failed to remove src/boat-house-android-proj/.gradle/buildOutputCleanup/cache.properties: Permission denied
+
+    warning: failed to remove src/boat-house-android-proj/.gradle/buildOutputCleanup/buildOutputCleanup.lock: Permission denied
+
+    xxxxx
+    ```
+    需进入 jenkins slave,即执行流水线的那台服务器，手工清理工作目录的文件即可。
+    ```
+    cd workspace
+    sudo rm -rf *
+    ```
