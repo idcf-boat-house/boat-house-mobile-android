@@ -1,0 +1,35 @@
+pipeline {
+  agent 
+  { 
+        label 'vm-slave' 
+  }
+  options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10')
+  }
+  environment {
+      CREDS_GITHUB_REGISTRY = credentials('creds-github-registry')
+      CREDS_DEV_SERVER = credentials('creds-dev-server')
+      def server=''
+  }
+  stages {   
+	stage('before-build'){
+          
+          steps {
+			sh "printenv"
+          }
+    }  
+    stage('build-android-gradle-project'){
+          
+        steps {			
+            sh "docker pull cangol/android-gradle"
+			sh "chmod +x $(pwd)/src/boat-house-android-proj/gradlew"  
+			sh 'docker run --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"'
+        }
+    }  
+}
+  post {                                           
+    always {
+      archiveArtifacts(allowEmptyArchive: true, artifacts: 'src/boat-house-android-proj/app/build/outputs/apk/*.apk')      
+    }
+  }
+}
