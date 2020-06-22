@@ -15,15 +15,15 @@ pipeline {
 	stage('before-build'){
           
           steps {
-			sh "printenv"
+		sh "printenv"
           }
     }  
     stage('build-android-gradle-project'){
           
         steps {			
-            sh "docker pull cangol/android-gradle"
-			sh "chmod +x $(pwd)/src/boat-house-android-proj/gradlew"  
-			sh 'docker run --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"'
+		sh "docker pull cangol/android-gradle"
+		//sh "chmod +x $(pwd)/src/boat-house-android-proj/gradlew"  
+		sh 'docker run --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"'
         }
     }  
 }
