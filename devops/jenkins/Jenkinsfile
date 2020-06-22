@@ -1,7 +1,7 @@
 pipeline {
   agent 
   { 
-        label 'vm-slave' 
+        label 'vm-slave'  
   }
   options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '10')
@@ -21,7 +21,7 @@ pipeline {
     stage('build-android-gradle-project'){
           
         steps {			
-		//sh "docker pull cangol/android-gradle"
+		//sh "docker pull cangol/android-gradle" //
 		sh "chmod +x src/boat-house-android-proj/gradlew"  
 		sh 'docker run --interactive --volume=$(pwd)/src/boat-house-android-proj:/opt/workspace --workdir=/opt/workspace --rm cangol/android-gradle  /bin/sh -c "./gradlew assembleDebug"'
         }
