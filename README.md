@@ -1,5 +1,3 @@
-
-
 # boat-house 船屋餐饮系统Android端
 
 ## IDCF Boat House 移动端 介绍 
@@ -11,7 +9,7 @@
 
 安卓原生app, 基于MVP架构开发。
 
-移动开发各种架构和技术选型请参考：**[移动APP开发框架盘点](src/boat-house-android-proj/mobile-app-architecture.md)**。
+移动开发各种架构和技术选型请参考：**[移动APP开发框架盘点](src/boat-house-android-proj/mobile-app-architecture.md)**。。
 
 
 ## 现有功能 
