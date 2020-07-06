@@ -2,9 +2,9 @@
 
 # boat-house 船屋餐饮系统Android端
 
-## IDCF Boat House 移动端 介绍
+## IDCF Boat House 移动端 介绍 
 
-通过此移动端App，可使用手机浏览菜品，自助点餐等。
+通过此移动端App，可使用手机浏览菜品，自助点餐等。。
 
 
 ## 系统架构 
